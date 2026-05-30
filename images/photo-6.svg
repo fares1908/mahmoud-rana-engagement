@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 900" role="img" aria-label="صورة الخطوبة ٦">
+  <defs>
+    <linearGradient id="bg6" x1="100%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1a1508"/>
+      <stop offset="50%" stop-color="#9a7828"/>
+      <stop offset="100%" stop-color="#f5dfa0"/>
+    </linearGradient>
+  </defs>
+  <rect width="600" height="900" fill="url(#bg6)"/>
+  <text x="300" y="400" text-anchor="middle" fill="#faf6ee" font-family="Arial, sans-serif" font-size="32" direction="rtl">حفل الخطوبة</text>
+  <text x="300" y="460" text-anchor="middle" fill="#c9a84c" font-family="Georgia, serif" font-size="22">05 June 2026</text>
+  <text x="300" y="510" text-anchor="middle" fill="#ede5d4" font-family="Georgia, serif" font-size="18">Mahmoud &amp; Rana</text>
+</svg>

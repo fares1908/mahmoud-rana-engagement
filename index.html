@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="description" content="دعوة خاصة لفرحة خطوبة محمود ورنا — الجمعة 5 يونيو 2026" />
+  <meta name="theme-color" content="#0A0806" />
+  <title>محمود &amp; رنا — فرحة خطوبتنا</title>
+
+  <!-- Preconnect for faster font loading -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+  <!-- Google Fonts: Arabic + English Luxury -->
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400;1,700&family=Cairo:wght@300;400;500;600;700;800&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap" rel="stylesheet" />
+
+  <!-- GSAP Core + ScrollTrigger from CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="is-loading">
+
+  <!-- ===================================================
+       ENVELOPE INTRO OVERLAY
+  =================================================== -->
+  <div id="envelopeOverlay" class="env-overlay">
+
+    <!-- المونوجرام — فوق على الشمال -->
+    <div class="env-overlay__mono" aria-hidden="true">
+      <img src="images/monogram.png" alt="" class="mono-badge__img" />
+    </div>
+
+    <!-- نجوم خلفية -->
+    <div class="env-stars" id="envStars" aria-hidden="true"></div>
+
+    <!-- المحتوى -->
+    <div class="env-content">
+
+      <!-- نص فوق المغلّف -->
+      <p class="env-pretitle en-font">A Special Invitation</p>
+      <p class="env-couple ar-font">محمود &amp; رنا</p>
+
+      <!-- المغلّف — اضغط عليه للفتح -->
+      <div class="env-wrap" id="envWrap" role="button" tabindex="0" aria-label="افتح الدعوة">
+        <div class="env-scene">
+
+          <!-- ظهر المغلّف -->
+          <div class="env-body">
+            <div class="env-body__lines" aria-hidden="true">
+              <span></span><span></span><span></span>
+            </div>
+          </div>
+
+          <!-- أجنحة داخلية -->
+          <div class="env-wing env-wing--left"  aria-hidden="true"></div>
+          <div class="env-wing env-wing--right" aria-hidden="true"></div>
+          <div class="env-wing env-wing--bottom" aria-hidden="true"></div>
+
+          <!-- الجواب -->
+          <div class="env-letter" id="envLetter">
+            <div class="env-letter__inner">
+              <div class="env-letter__orn" aria-hidden="true">
+                <span>✦</span><span class="env-letter__orn-line"></span><span>✦</span>
+              </div>
+              <p class="env-letter__greet ar-font">بفرحة كبيرة</p>
+              <p class="env-letter__msg ar-font">بنتشرّف بدعوتكم<br />لفرحة خطوبتنا</p>
+              <div class="env-letter__divider" aria-hidden="true"></div>
+              <p class="env-letter__hint ar-font">ونتمنّى تكونوا معانا</p>
+              <div class="env-letter__date">
+                <p class="env-letter__date-line ar-font">
+                  الجمعة — <span class="env-letter__date-nums en-font">05 يونيو 2026</span>
+                </p>
+              </div>
+              <span class="env-letter__heart" aria-hidden="true">♥</span>
+            </div>
+          </div>
+
+          <!-- الغطاء العلوي — بينطوي لفوق -->
+          <div class="env-flap" id="envFlap">
+            <div class="env-seal">
+              <img src="images/monogram.png" alt="M&R" class="env-seal__mono" />
+            </div>
+          </div>
+
+        </div><!-- /.env-scene -->
+      </div><!-- /.env-wrap -->
+
+    </div><!-- /.env-content -->
+  </div><!-- /#envelopeOverlay -->
+
+  <!-- قلوب حمراء عائمة (ستايل آيفون) -->
+  <div class="floating-hearts" id="floatingHearts" aria-hidden="true"></div>
+
+  <!-- ===================================================
+       CINEMATIC LOADER
+  =================================================== -->
+  <div id="loader" class="loader" aria-label="بيتحمّل">
+    <canvas id="loaderCanvas" class="loader__canvas"></canvas>
+    <div class="loader__inner">
+      <div class="loader__ornament loader__ornament--top">
+        <span>✦</span><span class="loader__orn-line"></span><span>✦</span>
+      </div>
+
+      <div class="loader__rings">
+        <div class="loader__ring loader__ring--1"></div>
+        <div class="loader__ring loader__ring--2"></div>
+        <div class="loader__ring loader__ring--3"></div>
+        <div class="loader__ring-dot"></div>
+      </div>
+
+      <div class="loader__names">
+        <img src="images/monogram.png" alt="محمود ورنا" class="loader__mono" />
+      </div>
+
+      <div class="loader__arabic ar-font">فرحة خطوبتنا</div>
+      <div class="loader__english en-font">Engagement Ceremony</div>
+
+      <div class="loader__ornament loader__ornament--bottom">
+        <span>✦</span><span class="loader__orn-line"></span><span>✦</span>
+      </div>
+
+      <div class="loader__progress-wrap">
+        <div class="loader__progress-track">
+          <div class="loader__progress-fill" id="loaderProgress"></div>
+          <div class="loader__progress-glow"></div>
+        </div>
+        <span class="loader__progress-text en-font" id="loaderPct">0%</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================================
+       SIDE NAVIGATION DOTS
+  =================================================== -->
+  <nav class="nav-dots" id="navDots" aria-label="روابط سريعة">
+    <a href="#hero"       class="nav-dot active" data-label="البداية"   aria-label="البداية"></a>
+    <a href="#invitation" class="nav-dot"         data-label="الدعوة"    aria-label="الدعوة"></a>
+    <a href="#countdown"  class="nav-dot"         data-label="العدّ"     aria-label="العدّ لحد فرحتنا"></a>
+    <a href="#details"    class="nav-dot"         data-label="التفاصيل" aria-label="التفاصيل"></a>
+  </nav>
+
+  <!-- ===================================================
+       MAIN CONTENT
+  =================================================== -->
+  <main id="main">
+
+    <!-- ─────────────── HERO ─────────────── -->
+    <section id="hero" class="s-hero" aria-label="الصفحة الرئيسية">
+      <canvas id="heroCanvas" class="s-hero__canvas" aria-hidden="true"></canvas>
+
+      <!-- المونوجرام — فوق على الشمال -->
+      <div class="hero-mono" aria-hidden="true">
+        <img src="images/monogram.png" alt="" class="mono-badge__img" />
+      </div>
+
+      <!-- Atmospheric fog layers -->
+      <div class="hero-fog hero-fog--1" aria-hidden="true"></div>
+      <div class="hero-fog hero-fog--2" aria-hidden="true"></div>
+      <div class="hero-fog hero-fog--3" aria-hidden="true"></div>
+
+      <!-- Cinematic light rays -->
+      <div class="hero-rays" aria-hidden="true">
+        <div class="hero-ray hero-ray--1"></div>
+        <div class="hero-ray hero-ray--2"></div>
+        <div class="hero-ray hero-ray--3"></div>
+        <div class="hero-ray hero-ray--4"></div>
+        <div class="hero-ray hero-ray--5"></div>
+      </div>
+
+      <!-- Rose petals container (populated by JS) -->
+      <div class="petals-wrap" id="petalsWrap" aria-hidden="true"></div>
+
+      <!-- Hero Content -->
+      <div class="hero-content" id="heroContent">
+        <p class="hero-pre en-font" id="heroPre">A Special Invitation</p>
+
+        <h1 class="hero-title" id="heroTitle" aria-label="محمود ورنا">
+          <span class="hero-title__groom en-font" id="groomName">Mahmoud</span>
+          <span class="hero-title__heart" id="heroHeart" aria-hidden="true">&amp;</span>
+          <span class="hero-title__bride en-font" id="brideName">Rana</span>
+        </h1>
+
+        <div class="hero-divider" id="heroDivider" aria-hidden="true">
+          <span class="hero-divider__line"></span>
+          <span class="hero-divider__gem">◆</span>
+          <span class="hero-divider__line"></span>
+        </div>
+
+        <p class="hero-subtitle ar-font" id="heroSubtitle">
+          دعوة خاصة لخطوبتنا
+        </p>
+
+        <p class="hero-date ar-font" id="heroDate">
+          الجمعة — 05 يونيو 2026
+        </p>
+
+        <div class="hero-btns" id="heroBtns">
+          <a href="#invitation" class="hero-btn hero-btn--primary ar-font">
+            <span>شوف الدعوة</span>
+            <div class="hero-btn__shine"></div>
+          </a>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ─────────────── INVITATION CARD ─────────────── -->
+    <section id="invitation" class="s-invitation reveal-section" aria-label="بطاقة الدعوة">
+      <canvas id="invCanvas" class="section-canvas" aria-hidden="true"></canvas>
+      <div class="section-sparkles" id="invSparkles" aria-hidden="true"></div>
+      <div class="s-invitation__glow" aria-hidden="true"></div>
+
+      <div class="container">
+        <div class="section-head">
+          <span class="section-label en-font" aria-hidden="true">The Invitation</span>
+          <h2 class="section-title ar-font">الدعوة</h2>
+          <div class="section-ornament" aria-hidden="true">
+            <span></span><span class="section-ornament__gem">✦</span><span></span>
+          </div>
+        </div>
+
+        <div class="inv-card" id="invCard">
+          <div class="inv-card__glow" aria-hidden="true"></div>
+          <div class="inv-card__shimmer" aria-hidden="true"></div>
+
+          <div class="inv-card__inner">
+            <!-- المونوجرام — فوق على الشمال -->
+            <div class="inv-card__mono" aria-hidden="true">
+              <img src="images/monogram.png" alt="" class="mono-badge__img" />
+            </div>
+
+            <!-- Top ornament -->
+            <div class="inv-orn" aria-hidden="true">
+              <div class="inv-orn__ring"></div>
+              <span class="inv-orn__gem">❋</span>
+            </div>
+
+            <p class="inv-card__label en-font">With Love &amp; Joy</p>
+
+            <!-- صورة الزوجين -->
+            <div class="inv-card__photo-wrap">
+              <div class="inv-card__photo-ring" aria-hidden="true"></div>
+              <img
+                src="images/mahmoud-rana.jpg"
+                alt="محمود ورنا"
+                class="inv-card__photo"
+                loading="lazy"
+              />
+              <div class="inv-card__photo-glow" aria-hidden="true"></div>
+            </div>
+
+            <h3 class="inv-card__couple en-font">Mahmoud &amp; Rana</h3>
+
+            <div class="inv-divider" aria-hidden="true">
+              <span></span><span class="inv-divider__dot">◆</span><span></span>
+            </div>
+
+            <p class="inv-card__text en-font">
+              With all our love and joy,<br />
+              we invite you to join us<br />
+              for our engagement celebration —<br />
+              the sweetest moment of our lives.
+            </p>
+
+            <div class="inv-divider" aria-hidden="true">
+              <span></span><span class="inv-divider__dot">◆</span><span></span>
+            </div>
+
+            <div class="inv-card__info">
+              <div class="inv-date-block">
+                <span class="inv-date-block__day en-font" id="invCardDay">Friday</span>
+                <span class="inv-date-block__gem" aria-hidden="true">◆</span>
+                <span class="inv-date-block__when en-font" id="invCardWhen">05 June 2026</span>
+              </div>
+            </div>
+
+            <div class="inv-card__footer en-font">
+              Mahmoud &amp; Rana
+            </div>
+
+            <!-- Wax seal -->
+            <div class="inv-seal" aria-hidden="true">
+              <div class="inv-seal__ring"></div>
+              <div class="inv-seal__inner">
+                <span>M&amp;R</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─────────────── COUNTDOWN ─────────────── -->
+    <section id="countdown" class="s-countdown reveal-section" aria-label="العدّ لحد فرحتنا">
+      <canvas id="cdCanvas" class="section-canvas" aria-hidden="true"></canvas>
+      <div class="s-countdown__bg" aria-hidden="true"></div>
+
+      <div class="container">
+        <div class="section-head">
+          <span class="section-label en-font" aria-hidden="true">Counting Down</span>
+          <h2 class="section-title ar-font">فاضل كام على فرحتنا؟</h2>
+          <div class="section-ornament" aria-hidden="true">
+            <span></span><span class="section-ornament__gem">✦</span><span></span>
+          </div>
+        </div>
+
+        <div class="countdown-grid" id="countdownGrid">
+
+          <div class="cd-unit-wrap" id="cdDays">
+            <div class="cd-ring-wrap">
+              <svg class="cd-ring" viewBox="0 0 120 120" aria-hidden="true">
+                <circle class="cd-ring__track" cx="60" cy="60" r="52"/>
+                <circle class="cd-ring__fill cd-ring__fill--days" cx="60" cy="60" r="52" id="daysFill"/>
+              </svg>
+              <div class="cd-center">
+                <span class="cd-num ar-font" id="cdDaysNum">00</span>
+                <span class="cd-lbl ar-font">يوم</span>
+              </div>
+            </div>
+            <div class="cd-glow cd-glow--days" aria-hidden="true"></div>
+          </div>
+
+          <div class="cd-unit-wrap" id="cdHours">
+            <div class="cd-ring-wrap">
+              <svg class="cd-ring" viewBox="0 0 120 120" aria-hidden="true">
+                <circle class="cd-ring__track" cx="60" cy="60" r="52"/>
+                <circle class="cd-ring__fill cd-ring__fill--hours" cx="60" cy="60" r="52" id="hoursFill"/>
+              </svg>
+              <div class="cd-center">
+                <span class="cd-num ar-font" id="cdHoursNum">00</span>
+                <span class="cd-lbl ar-font">ساعة</span>
+              </div>
+            </div>
+            <div class="cd-glow cd-glow--hours" aria-hidden="true"></div>
+          </div>
+
+          <div class="cd-unit-wrap" id="cdMins">
+            <div class="cd-ring-wrap">
+              <svg class="cd-ring" viewBox="0 0 120 120" aria-hidden="true">
+                <circle class="cd-ring__track" cx="60" cy="60" r="52"/>
+                <circle class="cd-ring__fill cd-ring__fill--mins" cx="60" cy="60" r="52" id="minsFill"/>
+              </svg>
+              <div class="cd-center">
+                <span class="cd-num ar-font" id="cdMinsNum">00</span>
+                <span class="cd-lbl ar-font">دقيقة</span>
+              </div>
+            </div>
+            <div class="cd-glow cd-glow--mins" aria-hidden="true"></div>
+          </div>
+
+          <div class="cd-unit-wrap" id="cdSecs">
+            <div class="cd-ring-wrap">
+              <svg class="cd-ring" viewBox="0 0 120 120" aria-hidden="true">
+                <circle class="cd-ring__track" cx="60" cy="60" r="52"/>
+                <circle class="cd-ring__fill cd-ring__fill--secs" cx="60" cy="60" r="52" id="secsFill"/>
+              </svg>
+              <div class="cd-center">
+                <span class="cd-num ar-font" id="cdSecsNum">00</span>
+                <span class="cd-lbl ar-font">ثانية</span>
+              </div>
+            </div>
+            <div class="cd-glow cd-glow--secs" aria-hidden="true"></div>
+          </div>
+
+        </div>
+
+        <p class="countdown-event-date ar-font">
+          الجمعة — 05 يونيو 2026
+        </p>
+      </div>
+    </section>
+
+    <!-- ─────────────── EVENT DETAILS ─────────────── -->
+    <section id="details" class="s-details reveal-section" aria-label="معاد فرحتنا">
+      <canvas id="detCanvas" class="section-canvas" aria-hidden="true"></canvas>
+
+      <div class="container">
+        <div class="section-head">
+          <span class="section-label en-font" aria-hidden="true">Engagement Details</span>
+          <h2 class="section-title ar-font">معاد فرحتنا</h2>
+          <div class="section-ornament" aria-hidden="true">
+            <span></span><span class="section-ornament__gem">✦</span><span></span>
+          </div>
+        </div>
+
+        <div class="details-grid">
+          <div class="detail-card" style="--delay:0s">
+            <div class="detail-card__glow" aria-hidden="true"></div>
+            <div class="detail-card__icon-wrap">
+              <div class="detail-card__icon-ring" aria-hidden="true"></div>
+              <span class="detail-card__icon" role="img" aria-label="التاريخ">📅</span>
+            </div>
+            <h3 class="detail-card__title ar-font">التاريخ</h3>
+            <p class="detail-card__sub ar-font">الجمعة</p>
+            <p class="detail-card__val ar-font">05 يونيو 2026</p>
+          </div>
+
+          <div class="detail-card" style="--delay:0.18s">
+            <div class="detail-card__glow" aria-hidden="true"></div>
+            <div class="detail-card__icon-wrap">
+              <div class="detail-card__icon-ring" aria-hidden="true"></div>
+              <span class="detail-card__icon" role="img" aria-label="الوقت">🕗</span>
+            </div>
+            <h3 class="detail-card__title ar-font">الوقت</h3>
+            <p class="detail-card__sub ar-font">الساعة 8 بليل</p>
+            <p class="detail-card__val en-font">8:00 PM</p>
+          </div>
+        </div>
+
+        <!-- Map Placeholder -->
+        <div class="map-wrap">
+          <div class="map-card">
+            <div class="map-card__grid" aria-hidden="true"></div>
+            <div class="map-card__overlay">
+              <span class="map-card__pin" role="img" aria-label="الموقع" aria-hidden="true">📍</span>
+              <p class="ar-font">مكان فرحتنا</p>
+              <a href="https://maps.app.goo.gl/wccUeuP2QvzvtibEA" target="_blank" rel="noopener noreferrer" class="map-card__btn ar-font">
+                افتح اللوكيشن
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─────────────── CINEMATIC ENDING ─────────────── -->
+    <section id="ending" class="s-ending reveal-section" aria-label="الختام">
+      <canvas id="endCanvas" class="section-canvas" aria-hidden="true"></canvas>
+      <div class="ending-stars" id="endingStars" aria-hidden="true"></div>
+
+      <div class="ending-content" id="endingContent">
+        <div class="ending-sparkles" id="endingSparkles" aria-hidden="true"></div>
+
+        <p class="ending-waiting ar-font">مستنيينكم ♥</p>
+
+        <!-- صورة الزوجين في النهاية -->
+        <div class="ending-photo-wrap">
+          <div class="ending-photo-ring" aria-hidden="true"></div>
+          <img
+            src="images/mahmoud-rana.jpg"
+            alt="محمود ورنا"
+            class="ending-photo"
+            loading="lazy"
+          />
+          <div class="ending-photo-glow" aria-hidden="true"></div>
+        </div>
+
+        <div class="ending-divider" aria-hidden="true">
+          <span class="ending-divider__line"></span>
+          <span class="ending-divider__gem">◆</span>
+          <span class="ending-divider__line"></span>
+        </div>
+
+        <h2 class="ending-couple en-font">Mahmoud &amp; Rana</h2>
+        <p class="ending-couple-ar ar-font">محمود &amp; رنا</p>
+
+        <p class="ending-date ar-font">05 · يونيو · 2026</p>
+
+        <div class="ending-gems" aria-hidden="true">
+          <span>✦</span>
+          <span>✧</span>
+          <span>✦</span>
+          <span>✧</span>
+          <span>✦</span>
+        </div>
+      </div>
+    </section>
+
+  </main><!-- /#main -->
+
+  <script src="script.js"></script>
+</body>
+</html>

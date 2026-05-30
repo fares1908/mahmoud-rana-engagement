@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 500" role="img" aria-label="صورة الخطوبة ٥">
+  <defs>
+    <linearGradient id="bg5" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#100a00"/>
+      <stop offset="60%" stop-color="#6a3808"/>
+      <stop offset="100%" stop-color="#f0c040"/>
+    </linearGradient>
+  </defs>
+  <rect width="900" height="500" fill="url(#bg5)"/>
+  <text x="450" y="220" text-anchor="middle" fill="#faf6ee" font-family="Arial, sans-serif" font-size="36" direction="rtl">لحظات الخطوبة</text>
+  <text x="450" y="280" text-anchor="middle" fill="#dfc06e" font-family="Georgia, serif" font-size="20">Engagement Memories</text>
+</svg>

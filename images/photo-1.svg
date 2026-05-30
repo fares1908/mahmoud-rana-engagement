@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 900" role="img" aria-label="صورة الخطوبة ١">
+  <defs>
+    <linearGradient id="bg1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1a1208"/>
+      <stop offset="50%" stop-color="#4a3218"/>
+      <stop offset="100%" stop-color="#c9a84c"/>
+    </linearGradient>
+  </defs>
+  <rect width="600" height="900" fill="url(#bg1)"/>
+  <circle cx="300" cy="380" r="120" fill="none" stroke="#dfc06e" stroke-width="1.5" opacity="0.5"/>
+  <text x="300" y="400" text-anchor="middle" fill="#faf6ee" font-family="Georgia, serif" font-size="42">♥</text>
+  <text x="300" y="480" text-anchor="middle" fill="#f0d898" font-family="Georgia, serif" font-size="28" letter-spacing="4">ENGAGEMENT</text>
+  <text x="300" y="530" text-anchor="middle" fill="#ede5d4" font-family="Arial, sans-serif" font-size="36" direction="rtl">خطوبة</text>
+  <text x="300" y="580" text-anchor="middle" fill="#c9a84c" font-family="Georgia, serif" font-size="18" opacity="0.9">Mahmoud &amp; Rana</text>
+</svg>

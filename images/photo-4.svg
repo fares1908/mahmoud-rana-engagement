@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" role="img" aria-label="صورة الخطوبة ٤">
+  <defs>
+    <linearGradient id="bg4" x1="0%" y1="50%" x2="100%" y2="50%">
+      <stop offset="0%" stop-color="#12080e"/>
+      <stop offset="100%" stop-color="#d4708c"/>
+    </linearGradient>
+  </defs>
+  <rect width="600" height="600" fill="url(#bg4)"/>
+  <text x="300" y="280" text-anchor="middle" fill="#ffdde2" font-family="Georgia, serif" font-size="36">M ♥ R</text>
+  <text x="300" y="340" text-anchor="middle" fill="#faf6ee" font-family="Arial, sans-serif" font-size="28" direction="rtl">محمود ورنا</text>
+</svg>
