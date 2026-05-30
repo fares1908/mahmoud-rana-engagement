@@ -612,6 +612,66 @@ body.low-power .hero-ray {
   opacity: 0.04 !important;
 }
 
+/* ── موبايل: سكرول أخف ── */
+body.mobile-scroll-opt .floating-hearts,
+body.mobile-scroll-opt .petals-wrap,
+body.mobile-scroll-opt .section-canvas,
+body.mobile-scroll-opt #heroCanvas,
+body.mobile-scroll-opt .hero-fog,
+body.mobile-scroll-opt .hero-rays {
+  display: none !important;
+}
+
+body.mobile-scroll-opt.serenity::before {
+  animation: none;
+  opacity: 0.45;
+}
+
+body.is-scrolling .flo-heart,
+body.is-scrolling .petal,
+body.is-scrolling .env-star,
+body.is-scrolling .sparkle,
+body.is-scrolling .star {
+  animation-play-state: paused !important;
+}
+
+body.is-touch .inv-card,
+body.is-touch .detail-card,
+body.is-touch .map-card,
+body.is-touch .cd-ring-wrap {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+body.is-touch .inv-card {
+  transform: none !important;
+  will-change: auto !important;
+}
+
+body.is-touch .inv-card__shimmer,
+body.is-touch .inv-card__photo-glow {
+  display: none !important;
+}
+
+body.is-touch .flo-heart {
+  will-change: auto;
+  filter: none;
+}
+
+body.is-touch .petal {
+  will-change: auto;
+}
+
+body.is-touch .inv-card__photo-ring {
+  animation: none;
+}
+
+@media (hover: none), (pointer: coarse) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
 html {
   scroll-behavior: smooth;
   scroll-padding-top: max(24px, env(safe-area-inset-top));

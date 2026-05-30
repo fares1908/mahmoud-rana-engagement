@@ -25,6 +25,18 @@ const CFG = {
   heartCount:      14,
   starCount:       120,
   sectionParticles: 40,
+  envStarCount:    80,
+  loaderParticles: 60,
+  heroOrbs:        8,
+};
+
+/** حالة الأداء */
+const PERF = {
+  reducedMotion: false,
+  lowPower:      false,
+  paused:        false,
+  scrolling:     false,
+  isTouch:       false,
 };
 
 /** توحيد عرض التاريخ في كل السايت */
@@ -67,34 +79,147 @@ function applySiteDates() {
   }
 }
 
+/** هل نسمح بالأنيميشن الثقيلة؟ */
+function shouldAnimateHeavy() {
+  return !PERF.reducedMotion && !PERF.paused && !PERF.scrolling && !document.hidden;
+}
+
+/** تأثيرات متحركة (canvas / قلوب / بتلات) — مش على الموبايل */
+function shouldRunDecor() {
+  return !PERF.isTouch && !PERF.reducedMotion;
+}
+
 /** ضبط الأداء والواجهة حسب حجم الشاشة */
 function applyResponsiveConfig() {
   const isMobile = window.matchMedia('(max-width: 768px)').matches;
   const isSmall  = window.matchMedia('(max-width: 480px)').matches;
   const isTouch  = window.matchMedia('(hover: none), (pointer: coarse)').matches;
+  const saveData = navigator.connection?.saveData === true;
+
+  PERF.isTouch       = isTouch;
+  PERF.reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  PERF.lowPower      = isMobile || isSmall || saveData || isTouch;
+
+  document.body.classList.toggle('reduce-motion', PERF.reducedMotion);
+  document.body.classList.toggle('low-power', PERF.lowPower);
+  document.body.classList.toggle('is-touch', isTouch);
+  document.body.classList.toggle('mobile-scroll-opt', isTouch || isMobile);
 
   if (isMobile) {
     document.body.classList.add('has-mobile-nav');
-    CFG.particleCount = 38;
-    CFG.petalCount = 10;
-    CFG.heartCount = 10;
-    CFG.sectionParticles = 20;
-    CFG.starCount = 70;
+    CFG.particleCount    = 0;
+    CFG.petalCount       = 0;
+    CFG.heartCount       = 0;
+    CFG.sectionParticles = 0;
+    CFG.starCount        = 18;
+    CFG.envStarCount     = 24;
+    CFG.loaderParticles  = 20;
+    CFG.heroOrbs         = 0;
   }
 
   if (isSmall) {
-    CFG.particleCount = 26;
-    CFG.petalCount = 6;
-    CFG.heartCount = 8;
-    CFG.sectionParticles = 14;
-    CFG.starCount = 48;
+    CFG.particleCount    = 0;
+    CFG.petalCount       = 0;
+    CFG.heartCount       = 0;
+    CFG.sectionParticles = 0;
+    CFG.starCount        = 12;
+    CFG.envStarCount     = 16;
+    CFG.loaderParticles  = 14;
+    CFG.heroOrbs         = 0;
   }
 
-  if (isTouch) {
-    document.body.classList.add('is-touch');
+  if (!isMobile && !isSmall) {
+    CFG.particleCount    = 50;
+    CFG.petalCount       = 8;
+    CFG.heartCount       = 14;
+    CFG.sectionParticles = 40;
+    CFG.starCount        = 120;
+    CFG.envStarCount     = 80;
+    CFG.loaderParticles  = 60;
+    CFG.heroOrbs         = 8;
+  }
+
+  if (PERF.lowPower && !isMobile && !isSmall) {
+    CFG.petalCount       = Math.min(CFG.petalCount, 6);
+    CFG.heartCount       = Math.min(CFG.heartCount, 6);
+    CFG.sectionParticles = Math.min(CFG.sectionParticles, 12);
+  }
+
+  if (PERF.reducedMotion) {
+    CFG.particleCount    = 0;
+    CFG.petalCount       = 0;
+    CFG.heartCount       = 0;
+    CFG.sectionParticles = 0;
+    CFG.starCount        = 0;
+    CFG.envStarCount     = 0;
+    CFG.loaderParticles  = 0;
+    CFG.heroOrbs         = 0;
   }
 
   document.body.classList.add('serenity');
+}
+
+/** إيقاف الأنيميشن أثناء السكرول + لما التاب مخفي */
+function initPerformance() {
+  document.addEventListener('visibilitychange', () => {
+    PERF.paused = document.hidden;
+  }, { passive: true });
+
+  if (PERF.isTouch) {
+    let scrollEnd;
+    window.addEventListener('scroll', () => {
+      if (!PERF.scrolling) {
+        PERF.scrolling = true;
+        document.body.classList.add('is-scrolling');
+      }
+      clearTimeout(scrollEnd);
+      scrollEnd = setTimeout(() => {
+        PERF.scrolling = false;
+        document.body.classList.remove('is-scrolling');
+      }, 120);
+    }, { passive: true });
+  }
+
+  let resizeT;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeT);
+    resizeT = setTimeout(() => {
+      applyResponsiveConfig();
+      if (typeof ScrollTrigger !== 'undefined') ScrollTrigger.refresh();
+    }, 250);
+  }, { passive: true });
+}
+
+/** حلقة canvas — بتشتغل بس لما العنصر ظاهر (مش 60fps فاضي) */
+function runWhenVisible(isActive, draw, idleCheckMs = 400) {
+  let rafId = null;
+  let timerId = null;
+
+  const tick = () => {
+    rafId = null;
+    if (isActive() && shouldAnimateHeavy()) {
+      draw();
+      rafId = requestAnimationFrame(tick);
+    } else {
+      timerId = setTimeout(() => {
+        timerId = null;
+        if (isActive()) rafId = requestAnimationFrame(tick);
+      }, idleCheckMs);
+    }
+  };
+
+  const start = () => {
+    if (rafId == null && timerId == null) rafId = requestAnimationFrame(tick);
+  };
+
+  const stop = () => {
+    if (rafId) cancelAnimationFrame(rafId);
+    if (timerId) clearTimeout(timerId);
+    rafId = null;
+    timerId = null;
+  };
+
+  return { start, stop };
 }
 
 /* ─────────────────────────────────────────────
@@ -129,8 +254,8 @@ function initEnvelope() {
 
   // نجوم الخلفية
   const starsEl = $('#envStars');
-  if (starsEl) {
-    for (let i = 0; i < 80; i++) {
+  if (starsEl && CFG.envStarCount > 0) {
+    for (let i = 0; i < CFG.envStarCount; i++) {
       const s = document.createElement('div');
       s.className = 'env-star';
       const size = rand(0.5, 2.5);
@@ -186,9 +311,17 @@ function initSiteAfterEnvelope() {
   applyResponsiveConfig();
   injectRuntimeStyles();
   initLoader();
-  initRosePetals();
-  initFloatingHearts();
-  initHeroCanvas();
+
+  if (shouldRunDecor()) {
+    initRosePetals();
+    initFloatingHearts();
+    initHeroCanvas();
+    ['invCanvas','cdCanvas','detCanvas','endCanvas'].forEach(id => {
+      initSectionCanvas(id);
+    });
+    createSparkles('invSparkles', document.body.classList.contains('is-touch') ? 4 : 8);
+  }
+
   initCountdown();
   initScrollReveal();
   initSmoothScroll();
@@ -198,12 +331,6 @@ function initSiteAfterEnvelope() {
   initScrollProgress();
   initEndingStars();
   initDetailCardRipple();
-
-  ['invCanvas','cdCanvas','detCanvas','endCanvas'].forEach(id => {
-    initSectionCanvas(id);
-  });
-
-  createSparkles('invSparkles', document.body.classList.contains('is-touch') ? 5 : 8);
 
   if (typeof gsap !== 'undefined') {
     initGSAPScrollAnimations();
@@ -293,11 +420,12 @@ function hideLoader(loader) {
 ───────────────────────────────────────────── */
 function initLoaderCanvas() {
   const canvas = $('#loaderCanvas');
-  if (!canvas) return;
+  if (!canvas || CFG.loaderParticles <= 0) return;
 
   const ctx = canvas.getContext('2d');
   let W, H;
   const particles = [];
+  const useGlow = !PERF.lowPower;
 
   function resize() {
     W = canvas.width  = window.innerWidth;
@@ -305,10 +433,9 @@ function initLoaderCanvas() {
   }
 
   resize();
-  window.addEventListener('resize', resize);
+  window.addEventListener('resize', resize, { passive: true });
 
-  // Create particles
-  for (let i = 0; i < 60; i++) {
+  for (let i = 0; i < CFG.loaderParticles; i++) {
     particles.push(createLoaderParticle(W, H));
   }
 
@@ -326,8 +453,8 @@ function initLoaderCanvas() {
     };
   }
 
-  let animId;
   function draw() {
+    if (!shouldAnimateHeavy()) return;
     ctx.clearRect(0, 0, W, H);
 
     // Radial glow center
@@ -354,22 +481,20 @@ function initLoaderCanvas() {
       ctx.beginPath();
       ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
       ctx.fillStyle = p.color === 'gold' ? '#C9A84C' : '#E8B4B8';
-      ctx.fill();
-
-      // Glow
-      ctx.shadowColor  = p.color === 'gold' ? 'rgba(201,168,76,0.8)' : 'rgba(232,180,184,0.7)';
-      ctx.shadowBlur   = 8;
+      if (useGlow) {
+        ctx.shadowColor = p.color === 'gold' ? 'rgba(201,168,76,0.8)' : 'rgba(232,180,184,0.7)';
+        ctx.shadowBlur  = 6;
+      }
       ctx.fill();
       ctx.restore();
     });
-
-    animId = requestAnimationFrame(draw);
   }
 
-  draw();
+  const loaderLoop = runWhenVisible(() => true, draw, 200);
+  loaderLoop.start();
 
   // Stop when loader fades out
-  setTimeout(() => cancelAnimationFrame(animId), CFG.loaderDuration + 1000);
+  setTimeout(() => loaderLoop.stop(), CFG.loaderDuration + 1000);
 }
 
 /* ─────────────────────────────────────────────
@@ -377,12 +502,14 @@ function initLoaderCanvas() {
 ───────────────────────────────────────────── */
 function initHeroCanvas() {
   const canvas = $('#heroCanvas');
-  if (!canvas) return;
+  if (!canvas || (CFG.particleCount <= 0 && CFG.heroOrbs <= 0)) return;
 
   const ctx = canvas.getContext('2d');
   let W, H;
   const particles = [];
   const orbs = [];
+  const useGlow = !PERF.lowPower;
+  let heroVisible = false;
 
   function resize() {
     W = canvas.width  = canvas.offsetWidth;
@@ -394,13 +521,18 @@ function initHeroCanvas() {
   const ro = new ResizeObserver(resize);
   ro.observe(canvas.parentElement);
 
-  // Regular particles (small golden dots)
+  const heroIo = new IntersectionObserver(([e]) => {
+    heroVisible = e.isIntersecting;
+    if (heroVisible) heroLoop.start();
+    else heroLoop.stop();
+  }, { threshold: 0.05, rootMargin: '40px' });
+  heroIo.observe(canvas.closest('.s-hero') || canvas);
+
   for (let i = 0; i < CFG.particleCount; i++) {
     particles.push(spawnParticle(W, H, true));
   }
 
-  // Glowing orbs (large soft circles)
-  for (let i = 0; i < 8; i++) {
+  for (let i = 0; i < CFG.heroOrbs; i++) {
     orbs.push(spawnOrb(W, H));
   }
 
@@ -431,7 +563,7 @@ function initHeroCanvas() {
     };
   }
 
-  function draw() {
+  function drawFrame() {
     ctx.clearRect(0, 0, W, H);
 
     // Ambient center glow
@@ -473,21 +605,21 @@ function initHeroCanvas() {
 
       ctx.save();
       ctx.globalAlpha = p.alpha;
-      ctx.shadowColor = p.color === '#C9A84C'
-        ? 'rgba(201,168,76,0.9)'
-        : 'rgba(232,180,184,0.8)';
-      ctx.shadowBlur = 8;
+      if (useGlow) {
+        ctx.shadowColor = p.color === '#C9A84C'
+          ? 'rgba(201,168,76,0.9)'
+          : 'rgba(232,180,184,0.8)';
+        ctx.shadowBlur = 5;
+      }
       ctx.beginPath();
       ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
       ctx.fillStyle = p.color;
       ctx.fill();
       ctx.restore();
     });
-
-    requestAnimationFrame(draw);
   }
 
-  draw();
+  const heroLoop = runWhenVisible(() => heroVisible, drawFrame);
 }
 
 /* ─────────────────────────────────────────────
@@ -495,11 +627,14 @@ function initHeroCanvas() {
 ───────────────────────────────────────────── */
 function initSectionCanvas(canvasId) {
   const canvas = document.getElementById(canvasId);
-  if (!canvas) return;
+  if (!canvas || CFG.sectionParticles <= 0) return;
 
   const ctx = canvas.getContext('2d');
+  const section = canvas.closest('section');
   let W, H;
   const pts = [];
+  let sectionVisible = false;
+  const useGlow = !PERF.lowPower;
 
   function resize() {
     W = canvas.width  = canvas.offsetWidth;
@@ -509,6 +644,17 @@ function initSectionCanvas(canvasId) {
 
   const ro = new ResizeObserver(resize);
   ro.observe(canvas.parentElement);
+
+  if (section) {
+    const io = new IntersectionObserver(([e]) => {
+      sectionVisible = e.isIntersecting;
+      if (sectionVisible) sectionLoop.start();
+      else sectionLoop.stop();
+    }, { rootMargin: '60px', threshold: 0.02 });
+    io.observe(section);
+  } else {
+    sectionVisible = true;
+  }
 
   for (let i = 0; i < CFG.sectionParticles; i++) {
     pts.push({
@@ -521,28 +667,26 @@ function initSectionCanvas(canvasId) {
     });
   }
 
-  function draw() {
-    if (!canvas.offsetParent && canvas.id !== 'endCanvas') {
-      requestAnimationFrame(draw);
-      return;
-    }
+  function drawFrame() {
     ctx.clearRect(0, 0, W, H);
     pts.forEach(p => {
       p.x += p.vx; p.y += p.vy;
       if (p.y < -5) { p.y = H + 5; p.x = rand(0, W); }
       ctx.save();
-      ctx.globalAlpha  = p.a;
-      ctx.shadowColor  = 'rgba(201,168,76,0.7)';
-      ctx.shadowBlur   = 6;
+      ctx.globalAlpha = p.a;
+      if (useGlow) {
+        ctx.shadowColor = 'rgba(201,168,76,0.7)';
+        ctx.shadowBlur  = 4;
+      }
       ctx.beginPath();
-      ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
       ctx.fillStyle = '#C9A84C';
       ctx.fill();
       ctx.restore();
     });
-    requestAnimationFrame(draw);
   }
-  draw();
+
+  const sectionLoop = runWhenVisible(() => sectionVisible, drawFrame);
 }
 
 /* ─────────────────────────────────────────────
@@ -550,7 +694,7 @@ function initSectionCanvas(canvasId) {
 ───────────────────────────────────────────── */
 function initRosePetals() {
   const container = $('#petalsWrap');
-  if (!container) return;
+  if (!container || CFG.petalCount <= 0) return;
 
   const colors = [
     '#E8D4DC','#F0E4EC','#DCE4EE',
@@ -591,7 +735,7 @@ function initRosePetals() {
 ───────────────────────────────────────────── */
 function initFloatingHearts() {
   const container = $('#floatingHearts');
-  if (!container) return;
+  if (!container || CFG.heartCount <= 0) return;
 
   for (let i = 0; i < CFG.heartCount; i++) {
     const heart = document.createElement('span');
@@ -624,7 +768,8 @@ function initFloatingHearts() {
 ───────────────────────────────────────────── */
 function createSparkles(containerId, count = 12) {
   const container = document.getElementById(containerId);
-  if (!container) return;
+  if (!container || PERF.reducedMotion) return;
+  if (PERF.lowPower) count = Math.min(count, 5);
 
   for (let i = 0; i < count; i++) {
     const sp = document.createElement('div');
@@ -662,7 +807,7 @@ function createSparkles(containerId, count = 12) {
 ───────────────────────────────────────────── */
 function initEndingStars() {
   const container = $('#endingStars');
-  if (!container) return;
+  if (!container || CFG.starCount <= 0) return;
 
   for (let i = 0; i < CFG.starCount; i++) {
     const star = document.createElement('div');
@@ -939,7 +1084,7 @@ function initNavDots() {
       const target   = document.getElementById(targetId);
       if (target) {
         revealSectionElement(target);
-        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        target.scrollIntoView({ behavior: PERF.isTouch ? 'auto' : 'smooth', block: 'start' });
         setTimeout(() => {
           revealSectionElement(target);
           if (typeof ScrollTrigger !== 'undefined') ScrollTrigger.refresh();
@@ -988,6 +1133,8 @@ function initCardTilt() {
    14. SMOOTH SCROLL (for hero buttons)
 ───────────────────────────────────────────── */
 function initSmoothScroll() {
+  const scrollBehavior = PERF.isTouch ? 'auto' : 'smooth';
+
   $$('a[href^="#"]').forEach(link => {
     link.addEventListener('click', (e) => {
       const href = link.getAttribute('href');
@@ -996,7 +1143,7 @@ function initSmoothScroll() {
       if (target) {
         e.preventDefault();
         revealSectionElement(target);
-        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        target.scrollIntoView({ behavior: scrollBehavior, block: 'start' });
 
         const afterScroll = () => {
           revealSectionElement(target);
@@ -1020,6 +1167,10 @@ function initGSAPScrollAnimations() {
   gsapScrollInitialized = true;
 
   gsap.registerPlugin(ScrollTrigger);
+
+  if (PERF.isTouch) {
+    ScrollTrigger.config({ limitCallbacks: true, syncInterval: 150 });
+  }
 
   const fromScroll = { immediateRender: false };
 
@@ -1082,11 +1233,11 @@ function initGSAPScrollAnimations() {
       once: true,
     },
     opacity: 0,
-    y: 60,
-    scale: 0.92,
-    rotationX: 8,
-    duration: 1.2,
-    ease: 'power4.out',
+    y: PERF.isTouch ? 36 : 60,
+    scale: PERF.isTouch ? 0.98 : 0.92,
+    rotationX: PERF.isTouch ? 0 : 8,
+    duration: PERF.isTouch ? 0.85 : 1.2,
+    ease: PERF.isTouch ? 'power3.out' : 'power4.out',
   });
 
   // Ending section cinematic entrance
@@ -1113,6 +1264,8 @@ function initGSAPScrollAnimations() {
    19. SCROLL PROGRESS INDICATOR
 ───────────────────────────────────────────── */
 function initScrollProgress() {
+  if (PERF.isTouch) return;
+
   const bar = document.createElement('div');
   bar.style.cssText = `
     position: fixed;
@@ -1186,6 +1339,8 @@ function initDetailCardRipple() {
    INIT — DOM READY
 ───────────────────────────────────────────── */
 document.addEventListener('DOMContentLoaded', () => {
+  applyResponsiveConfig();
+  initPerformance();
   applySiteDates();
   // الـ envelope أول حاجة — الموقع بيتشغّل بعده
   initEnvelope();
