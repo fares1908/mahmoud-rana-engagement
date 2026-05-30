@@ -578,8 +578,15 @@ img {
 }
 
 section[id].reveal-section {
-  content-visibility: auto;
-  contain-intrinsic-size: auto 720px;
+  /* content-visibility بيعمل lag لما تسكرول لفوق من الآخر — شيلناه على الموبايل */
+  contain: layout style;
+}
+
+@media (min-width: 769px) and (hover: hover) {
+  section[id].reveal-section {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 720px;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -620,6 +627,22 @@ body.mobile-scroll-opt #heroCanvas,
 body.mobile-scroll-opt .hero-fog,
 body.mobile-scroll-opt .hero-rays {
   display: none !important;
+}
+
+body.mobile-scroll-opt .ending-stars,
+body.mobile-scroll-opt .ending-sparkles {
+  display: none !important;
+}
+
+body.mobile-scroll-opt .ending-photo-ring,
+body.mobile-scroll-opt .ending-photo-glow {
+  display: none !important;
+}
+
+body.mobile-scroll-opt .s-ending {
+  min-height: auto;
+  min-height: 85dvh;
+  contain: layout style;
 }
 
 body.mobile-scroll-opt.serenity::before {

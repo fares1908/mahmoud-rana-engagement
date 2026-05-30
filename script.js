@@ -35,7 +35,6 @@ const PERF = {
   reducedMotion: false,
   lowPower:      false,
   paused:        false,
-  scrolling:     false,
   isTouch:       false,
 };
 
@@ -81,7 +80,7 @@ function applySiteDates() {
 
 /** هل نسمح بالأنيميشن الثقيلة؟ */
 function shouldAnimateHeavy() {
-  return !PERF.reducedMotion && !PERF.paused && !PERF.scrolling && !document.hidden;
+  return !PERF.reducedMotion && !PERF.paused && !document.hidden;
 }
 
 /** تأثيرات متحركة (canvas / قلوب / بتلات) — مش على الموبايل */
@@ -111,7 +110,7 @@ function applyResponsiveConfig() {
     CFG.petalCount       = 0;
     CFG.heartCount       = 0;
     CFG.sectionParticles = 0;
-    CFG.starCount        = 18;
+    CFG.starCount        = 0;
     CFG.envStarCount     = 24;
     CFG.loaderParticles  = 20;
     CFG.heroOrbs         = 0;
@@ -122,7 +121,7 @@ function applyResponsiveConfig() {
     CFG.petalCount       = 0;
     CFG.heartCount       = 0;
     CFG.sectionParticles = 0;
-    CFG.starCount        = 12;
+    CFG.starCount        = 0;
     CFG.envStarCount     = 16;
     CFG.loaderParticles  = 14;
     CFG.heroOrbs         = 0;
@@ -164,21 +163,6 @@ function initPerformance() {
   document.addEventListener('visibilitychange', () => {
     PERF.paused = document.hidden;
   }, { passive: true });
-
-  if (PERF.isTouch) {
-    let scrollEnd;
-    window.addEventListener('scroll', () => {
-      if (!PERF.scrolling) {
-        PERF.scrolling = true;
-        document.body.classList.add('is-scrolling');
-      }
-      clearTimeout(scrollEnd);
-      scrollEnd = setTimeout(() => {
-        PERF.scrolling = false;
-        document.body.classList.remove('is-scrolling');
-      }, 120);
-    }, { passive: true });
-  }
 
   let resizeT;
   window.addEventListener('resize', () => {
@@ -830,8 +814,10 @@ function initEndingStars() {
     container.appendChild(star);
   }
 
-  // Ending sparkles
-  createSparkles('endingSparkles', 20);
+  // Ending sparkles — خفيفة أو معدومة على الموبايل
+  if (!PERF.isTouch) {
+    createSparkles('endingSparkles', PERF.lowPower ? 6 : 12);
+  }
 }
 
 /* ─────────────────────────────────────────────
@@ -1240,22 +1226,34 @@ function initGSAPScrollAnimations() {
     ease: PERF.isTouch ? 'power3.out' : 'power4.out',
   });
 
-  // Ending section cinematic entrance
-  const endingTl = gsap.timeline({
-    scrollTrigger: {
-      trigger: '#ending',
-      start: 'top 70%',
-      once: true,
-    }
-  });
+  // Ending section — أنيميشن أخف على الموبايل
+  if (PERF.isTouch) {
+    gsap.from('#ending .ending-waiting, #ending .ending-couple, #ending .ending-couple-ar, #ending .ending-date', {
+      ...fromScroll,
+      scrollTrigger: { trigger: '#ending', start: 'top 85%', once: true },
+      opacity: 0,
+      y: 20,
+      duration: 0.6,
+      stagger: 0.08,
+      ease: 'power2.out',
+    });
+  } else {
+    const endingTl = gsap.timeline({
+      scrollTrigger: {
+        trigger: '#ending',
+        start: 'top 70%',
+        once: true,
+      }
+    });
 
-  endingTl
-    .from('.ending-waiting',    { ...fromScroll, opacity: 0, y: 30, duration: 1,   ease: 'power3.out' })
-    .from('.ending-divider',    { ...fromScroll, opacity: 0,         duration: 0.7, ease: 'power2.out' }, '-=0.4')
-    .from('.ending-couple',     { ...fromScroll, opacity: 0, y: 30, duration: 1.2, ease: 'power3.out' }, '-=0.3')
-    .from('.ending-couple-ar',  { ...fromScroll, opacity: 0, y: 20, duration: 0.9, ease: 'power3.out' }, '-=0.5')
-    .from('.ending-date',       { ...fromScroll, opacity: 0, y: 15, duration: 0.8, ease: 'power2.out' }, '-=0.4')
-    .from('.ending-gems',       { ...fromScroll, opacity: 0,         duration: 1,   ease: 'power2.out' }, '-=0.2');
+    endingTl
+      .from('.ending-waiting',    { ...fromScroll, opacity: 0, y: 30, duration: 1,   ease: 'power3.out' })
+      .from('.ending-divider',    { ...fromScroll, opacity: 0,         duration: 0.7, ease: 'power2.out' }, '-=0.4')
+      .from('.ending-couple',     { ...fromScroll, opacity: 0, y: 30, duration: 1.2, ease: 'power3.out' }, '-=0.3')
+      .from('.ending-couple-ar',  { ...fromScroll, opacity: 0, y: 20, duration: 0.9, ease: 'power3.out' }, '-=0.5')
+      .from('.ending-date',       { ...fromScroll, opacity: 0, y: 15, duration: 0.8, ease: 'power2.out' }, '-=0.4')
+      .from('.ending-gems',       { ...fromScroll, opacity: 0,         duration: 1,   ease: 'power2.out' }, '-=0.2');
+  }
 
   ScrollTrigger.refresh();
 }
