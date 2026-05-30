@@ -578,15 +578,7 @@ img {
 }
 
 section[id].reveal-section {
-  /* content-visibility بيعمل lag لما تسكرول لفوق من الآخر — شيلناه على الموبايل */
-  contain: layout style;
-}
-
-@media (min-width: 769px) and (hover: hover) {
-  section[id].reveal-section {
-    content-visibility: auto;
-    contain-intrinsic-size: auto 720px;
-  }
+  contain: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -648,8 +640,50 @@ body.is-scrolling .flo-heart,
 body.is-scrolling .petal,
 body.is-scrolling .env-star,
 body.is-scrolling .sparkle,
-body.is-scrolling .star {
+body.is-scrolling .star,
+body.is-scrolling .hero-fog,
+body.is-scrolling .hero-ray,
+body.is-scrolling .inv-card,
+body.is-scrolling .detail-card,
+body.is-scrolling .cd-glow,
+body.is-scrolling .inv-card__glow,
+body.is-scrolling .detail-card__icon-ring {
   animation-play-state: paused !important;
+}
+
+body.mobile-scroll-opt.is-scrolling .reveal-section {
+  transition: none !important;
+}
+
+body.mobile-scroll-opt .reveal-section {
+  transform: none !important;
+  transition: none !important;
+}
+
+body.mobile-scroll-opt .reveal-section.is-revealed {
+  transform: none !important;
+}
+
+body.mobile-scroll-opt .detail-card,
+body.mobile-scroll-opt .cd-glow,
+body.mobile-scroll-opt .detail-card__icon-ring,
+body.mobile-scroll-opt .inv-card__glow,
+body.mobile-scroll-opt .inv-card__shimmer,
+body.mobile-scroll-opt .section-sparkles {
+  animation: none !important;
+}
+
+body.is-scrolling.serenity::before {
+  animation-play-state: paused;
+}
+
+body.mobile-scroll-opt .is-revealed .ending-waiting,
+body.mobile-scroll-opt .is-revealed .ending-couple,
+body.mobile-scroll-opt .is-revealed .ending-couple-ar,
+body.mobile-scroll-opt .is-revealed .ending-date {
+  animation: none !important;
+  opacity: 1 !important;
+  transform: none !important;
 }
 
 body.is-touch .inv-card,

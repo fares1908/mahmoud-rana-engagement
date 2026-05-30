@@ -164,6 +164,15 @@ function initPerformance() {
     PERF.paused = document.hidden;
   }, { passive: true });
 
+  let scrollEndTimer = null;
+  window.addEventListener('scroll', () => {
+    document.body.classList.add('is-scrolling');
+    clearTimeout(scrollEndTimer);
+    scrollEndTimer = setTimeout(() => {
+      document.body.classList.remove('is-scrolling');
+    }, 150);
+  }, { passive: true });
+
   let resizeT;
   window.addEventListener('resize', () => {
     clearTimeout(resizeT);
@@ -316,9 +325,9 @@ function initSiteAfterEnvelope() {
   initScrollProgress();
   initDetailCardRipple();
 
-  if (typeof gsap !== 'undefined') {
+  if (typeof gsap !== 'undefined' && !PERF.isTouch) {
     initGSAPScrollAnimations();
-  } else {
+  } else if (typeof gsap === 'undefined' && !PERF.isTouch) {
     window.addEventListener('load', () => {
       if (typeof gsap !== 'undefined') initGSAPScrollAnimations();
     });
@@ -1038,7 +1047,7 @@ function initParallax() {
 function initNavDots() {
   const dots    = $$('.nav-dot');
   const sections = $$('section[id]');
-  if (!dots.length || !sections.length) return;
+  if (!dots.length || !sections.length || PERF.isTouch) return;
 
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
@@ -1345,10 +1354,9 @@ window.addEventListener('resize', () => {
 }, { passive: true });
 
 window.addEventListener('load', () => {
-  // لو الـ envelope لسه ظاهر، مش بنعمل حاجة — بيتعمل في initSiteAfterEnvelope
   if ($('#envelopeOverlay') && !$('#envelopeOverlay').classList.contains('is-gone')) return;
 
-  if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+  if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined' && !PERF.isTouch) {
     initGSAPScrollAnimations();
     ScrollTrigger.refresh();
   }
