@@ -11,8 +11,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 
-  <!-- Google Fonts: Arabic + English Luxury -->
-  <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400;1,700&family=Cairo:wght@300;400;500;600;700;800&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap" rel="stylesheet" />
+  <!-- Google Fonts — أوزان أساسية فقط (أسرع تحميل) -->
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@400;600;700&family=Cormorant+Garamond:wght@400;600&family=Playfair+Display:wght@400;600&display=swap" rel="stylesheet" />
 
   <!-- GSAP Core + ScrollTrigger from CDN -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
@@ -232,10 +232,10 @@
             </div>
 
             <!-- Top ornament -->
-            <div class="inv-orn" aria-hidden="true">
+            <!-- <div class="inv-orn" aria-hidden="true">
               <div class="inv-orn__ring"></div>
               <span class="inv-orn__gem">❋</span>
-            </div>
+            </div> -->
 
             <p class="inv-card__label en-font">With Love &amp; Joy</p>
 
@@ -246,7 +246,10 @@
                 src="images/mahmoud-rana.jpg"
                 alt="محمود ورنا"
                 class="inv-card__photo"
+                width="300"
+                height="300"
                 loading="lazy"
+                decoding="async"
               />
               <div class="inv-card__photo-glow" aria-hidden="true"></div>
             </div>
@@ -281,12 +284,12 @@
             </div>
 
             <!-- Wax seal -->
-            <div class="inv-seal" aria-hidden="true">
+            <!-- <div class="inv-seal" aria-hidden="true">
               <div class="inv-seal__ring"></div>
               <div class="inv-seal__inner">
                 <span>M&amp;R</span>
               </div>
-            </div>
+            </div> -->
           </div>
         </div>
       </div>
@@ -442,7 +445,10 @@
             src="images/mahmoud-rana.jpg"
             alt="محمود ورنا"
             class="ending-photo"
+            width="400"
+            height="400"
             loading="lazy"
+            decoding="async"
           />
           <div class="ending-photo-glow" aria-hidden="true"></div>
         </div>
