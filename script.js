@@ -300,10 +300,11 @@ function initSiteAfterEnvelope() {
     initRosePetals();
     initFloatingHearts();
     initHeroCanvas();
-    ['invCanvas','cdCanvas','detCanvas','endCanvas'].forEach(id => {
+    ['invCanvas','cdCanvas','detCanvas'].forEach(id => {
       initSectionCanvas(id);
     });
     createSparkles('invSparkles', document.body.classList.contains('is-touch') ? 4 : 8);
+    initHeroStars();
   }
 
   initCountdown();
@@ -313,7 +314,6 @@ function initSiteAfterEnvelope() {
   initNavDots();
   initCardTilt();
   initScrollProgress();
-  initEndingStars();
   initDetailCardRipple();
 
   if (typeof gsap !== 'undefined') {
@@ -748,7 +748,7 @@ function initFloatingHearts() {
 }
 
 /* ─────────────────────────────────────────────
-   7. SPARKLES GENERATOR (for invitation/ending sections)
+   7. SPARKLES GENERATOR
 ───────────────────────────────────────────── */
 function createSparkles(containerId, count = 12) {
   const container = document.getElementById(containerId);
@@ -787,10 +787,10 @@ function createSparkles(containerId, count = 12) {
 }
 
 /* ─────────────────────────────────────────────
-   7. ENDING STARS
+   7b. HERO STARS + SPARKLES (صفحة البداية فقط)
 ───────────────────────────────────────────── */
-function initEndingStars() {
-  const container = $('#endingStars');
+function initHeroStars() {
+  const container = $('#heroStars');
   if (!container || CFG.starCount <= 0) return;
 
   for (let i = 0; i < CFG.starCount; i++) {
@@ -814,9 +814,8 @@ function initEndingStars() {
     container.appendChild(star);
   }
 
-  // Ending sparkles — خفيفة أو معدومة على الموبايل
   if (!PERF.isTouch) {
-    createSparkles('endingSparkles', PERF.lowPower ? 6 : 12);
+    createSparkles('heroSparkles', PERF.lowPower ? 6 : 12);
   }
 }
 
@@ -1226,34 +1225,16 @@ function initGSAPScrollAnimations() {
     ease: PERF.isTouch ? 'power3.out' : 'power4.out',
   });
 
-  // Ending section — أنيميشن أخف على الموبايل
-  if (PERF.isTouch) {
-    gsap.from('#ending .ending-waiting, #ending .ending-couple, #ending .ending-couple-ar, #ending .ending-date', {
-      ...fromScroll,
-      scrollTrigger: { trigger: '#ending', start: 'top 85%', once: true },
-      opacity: 0,
-      y: 20,
-      duration: 0.6,
-      stagger: 0.08,
-      ease: 'power2.out',
-    });
-  } else {
-    const endingTl = gsap.timeline({
-      scrollTrigger: {
-        trigger: '#ending',
-        start: 'top 70%',
-        once: true,
-      }
-    });
-
-    endingTl
-      .from('.ending-waiting',    { ...fromScroll, opacity: 0, y: 30, duration: 1,   ease: 'power3.out' })
-      .from('.ending-divider',    { ...fromScroll, opacity: 0,         duration: 0.7, ease: 'power2.out' }, '-=0.4')
-      .from('.ending-couple',     { ...fromScroll, opacity: 0, y: 30, duration: 1.2, ease: 'power3.out' }, '-=0.3')
-      .from('.ending-couple-ar',  { ...fromScroll, opacity: 0, y: 20, duration: 0.9, ease: 'power3.out' }, '-=0.5')
-      .from('.ending-date',       { ...fromScroll, opacity: 0, y: 15, duration: 0.8, ease: 'power2.out' }, '-=0.4')
-      .from('.ending-gems',       { ...fromScroll, opacity: 0,         duration: 1,   ease: 'power2.out' }, '-=0.2');
-  }
+  // Ending — خفيف (من غير نجوم/تأثيرات)
+  gsap.from('#ending .ending-waiting, #ending .ending-photo-wrap, #ending .ending-couple, #ending .ending-couple-ar, #ending .ending-date', {
+    ...fromScroll,
+    scrollTrigger: { trigger: '#ending', start: 'top 88%', once: true },
+    opacity: 0,
+    y: 16,
+    duration: 0.55,
+    stagger: 0.06,
+    ease: 'power2.out',
+  });
 
   ScrollTrigger.refresh();
 }
@@ -1346,7 +1327,7 @@ document.addEventListener('DOMContentLoaded', () => {
   /* placeholder — المنطق الحقيقي اتنقل لـ initSiteAfterEnvelope */
   if (false) {
     // Section canvases
-    ['invCanvas','cdCanvas','detCanvas','endCanvas'].forEach(id => {
+    ['invCanvas','cdCanvas','detCanvas'].forEach(id => {
       initSectionCanvas(id);
     });
 

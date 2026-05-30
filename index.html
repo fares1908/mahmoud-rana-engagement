@@ -169,6 +169,10 @@
         <div class="hero-ray hero-ray--5"></div>
       </div>
 
+      <!-- نجوم و sparkles — بس في صفحة البداية -->
+      <div class="hero-stars" id="heroStars" aria-hidden="true"></div>
+      <div class="hero-sparkles" id="heroSparkles" aria-hidden="true"></div>
+
       <!-- Rose petals container (populated by JS) -->
       <div class="petals-wrap" id="petalsWrap" aria-hidden="true"></div>
 
@@ -430,17 +434,11 @@
 
     <!-- ─────────────── CINEMATIC ENDING ─────────────── -->
     <section id="ending" class="s-ending reveal-section" aria-label="الختام">
-      <canvas id="endCanvas" class="section-canvas" aria-hidden="true"></canvas>
-      <div class="ending-stars" id="endingStars" aria-hidden="true"></div>
-
       <div class="ending-content" id="endingContent">
-        <div class="ending-sparkles" id="endingSparkles" aria-hidden="true"></div>
-
         <p class="ending-waiting ar-font">مستنيينكم ♥</p>
 
         <!-- صورة الزوجين في النهاية -->
         <div class="ending-photo-wrap">
-          <div class="ending-photo-ring" aria-hidden="true"></div>
           <img
             src="images/mahmoud-rana.jpg"
             alt="محمود ورنا"
@@ -450,7 +448,6 @@
             loading="lazy"
             decoding="async"
           />
-          <div class="ending-photo-glow" aria-hidden="true"></div>
         </div>
 
         <div class="ending-divider" aria-hidden="true">
@@ -463,14 +460,6 @@
         <p class="ending-couple-ar ar-font">محمود &amp; رنا</p>
 
         <p class="ending-date ar-font">05 · يونيو · 2026</p>
-
-        <div class="ending-gems" aria-hidden="true">
-          <span>✦</span>
-          <span>✧</span>
-          <span>✦</span>
-          <span>✧</span>
-          <span>✦</span>
-        </div>
       </div>
     </section>
 
